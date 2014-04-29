@@ -8,8 +8,10 @@ current_directory = File.expand_path File.dirname(__FILE__)
 require File.expand_path File.join(current_directory, 'lib/watcher.rb')
 require File.expand_path File.join(current_directory, 'lib/alerter.rb')
 
-watcher = Watcher.new 'list.yml'
+list = File.expand_path File.join(current_directory, 'list.yml')
+watcher = Watcher.new list
 messages = watcher.watch
 
-alerter = Alerter.new 'config.yml'
+config = File.expand_path File.join(current_directory, 'config.yml')
+alerter = Alerter.new config
 alerter.alert messages
