@@ -1,0 +1,4 @@
+- ip_address: localhost
+  services: ssh, http
+- ip_address: 127.0.0.1
+  services: 22, 80
