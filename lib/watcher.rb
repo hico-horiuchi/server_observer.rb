@@ -1,5 +1,3 @@
-require 'yaml'
-
 class Watcher
   def initialize(list)
     @list = YAML.load_file list
