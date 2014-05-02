@@ -1,32 +1,24 @@
 class Watcher
-  def initialize(list)
-    @list = YAML.load_file list
+  def initialize(ip_address, services)
+    @ip_address = ip_address
+    @services = services
   end
 
   def watch
-    alerts = []
-
-    @list.each do |server|
-      ip_address = server['ip_address']
-      services = server['services'].split(',').map &:strip
-      down_services = []
-
-      services.each do |service|
-        pinger = Net::Ping::TCP.new ip_address, service
-        down_services << service unless pinger.ping?
-      end
-
-      alerts << make_alert(ip_address, down_services) unless down_services.empty?
+    down_services = []
+    @services.each do |service|
+      pinger = Net::Ping::TCP.new @ip_address, service
+      down_services << service unless pinger.ping?
     end
-
-    alerts
+    make_alert(down_services)
   end
 
   private
 
-  def make_alert(ip_address, services)
-    alert = "[#{ip_address}] #{services.shift}"
-    services.each { |service| alert += ", #{service}" }
+  def make_alert(down_services)
+    return '' if down_services.empty?
+    alert = "[#{@ip_address}] #{down_services.shift}"
+    down_services.each { |service| alert += ", #{service}" }
     alert += " is down!"
   end
 end

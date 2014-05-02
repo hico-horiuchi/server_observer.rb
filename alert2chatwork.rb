@@ -9,10 +9,18 @@ current_directory = File.expand_path File.dirname(__FILE__)
 require File.expand_path File.join(current_directory, 'lib/watcher.rb')
 require File.expand_path File.join(current_directory, 'lib/alerter.rb')
 
+messages = []
+
 list = File.expand_path File.join(current_directory, 'list.yml')
-watcher = Watcher.new list
-messages = watcher.watch
+YAML.load_file(list).each do |server|
+  ip_address = server['ip_address']
+  services = server['services'].split(',').map &:strip
+  messages << Watcher.new(ip_address, services).watch
+end
+messages.delete('')
 
 config = File.expand_path File.join(current_directory, 'config.yml')
 alerter = Alerter.new config
-alerter.alert messages
+messages.each do |message|
+  alerter.alert message
+end

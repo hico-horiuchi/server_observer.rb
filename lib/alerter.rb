@@ -6,9 +6,7 @@ class Alerter
     ChatWork.api_key = @api
   end
 
-  def alert(messages)
-    messages.each do |message|
-      ChatWork::Message.create room_id: @room_id, body: message
-    end
+  def alert(message)
+    ChatWork::Message.create room_id: @room_id, body: message
   end
 end
