@@ -1,8 +1,8 @@
 #!/usr/local/bin/ruby
 require 'yaml'
+require 'bundler'
 
 ENV['BUNDLE_GEMFILE'] = File.expand_path File.join(File.dirname($0), 'Gemfile')
-require 'bundler'
 Bundler.require
 
 current_directory = File.expand_path File.dirname(__FILE__)
