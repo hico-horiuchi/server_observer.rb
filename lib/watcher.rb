@@ -4,17 +4,29 @@ class Watcher
   end
 
   def watch
-    messages = []
+    alerts = []
 
     @list.each do |server|
       ip_address = server['ip_address']
       services = server['services'].split(',').map &:strip
+      down_services = []
+
       services.each do |service|
         pinger = Net::Ping::TCP.new ip_address, service
-        messages << "[#{ip_address}] #{service} is down!" unless pinger.ping?
+        down_services << service unless pinger.ping?
       end
+
+      alerts << make_alert(ip_address, down_services) unless down_services.empty?
     end
 
-    messages
+    alerts
+  end
+
+  private
+
+  def make_alert(ip_address, services)
+    alert = "[#{ip_address}] #{services.shift}"
+    services.each { |service| alert += ", #{service}" }
+    alert += " is down!"
   end
 end
