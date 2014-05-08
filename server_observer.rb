@@ -1,4 +1,4 @@
-#!/usr/local/bin/ruby
+#!/usr/bin/env ruby
 $:.unshift(File.dirname(File.expand_path(__FILE__)))
 
 require 'yaml'
