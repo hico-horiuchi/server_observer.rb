@@ -1,8 +1,10 @@
 #!/usr/local/bin/ruby
+$:.unshift(File.dirname(File.expand_path(__FILE__)))
 
-def full_path(file_name)
-  File.expand_path File.join(File.dirname($0), file_name)
-end
+require 'yaml'
+require 'bundler/setup'
+require 'lib/observation'
+require 'lib/notification'
 
 def make_alert(downed)
   alert = downed.shift
@@ -10,15 +12,8 @@ def make_alert(downed)
   alert += ' is down!'
 end
 
-ENV['BUNDLE_GEMFILE'] = full_path('Gemfile')
-
-require 'yaml'
-require 'bundler/setup'
-require full_path('lib/observation.rb')
-require full_path('lib/notification.rb')
-
-list = YAML.load_file full_path('config/list.yml')
-setting = YAML.load_file full_path('config/setting.yml')
+list = YAML.load_file(File.expand_path('../config/list.yml', __FILE__))
+setting = YAML.load_file(File.expand_path('../config/setting.yml', __FILE__))
 
 unless setting['chat'].nil?
   set = setting['chat']
@@ -42,6 +37,6 @@ list.each do |server|
   unless downed.empty?
     alert = make_alert(downed)
     chat.notify "[#{observer.ip_address}] #{alert}" unless chat.nil?
-    growl.notify observer.ip_address, alert, full_path('alert.png') unless growl.nil?
+    growl.notify observer.ip_address, alert, File.expand_path('../alert.png', __FILE__) unless growl.nil?
   end
 end
