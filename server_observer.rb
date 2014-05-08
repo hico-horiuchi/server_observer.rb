@@ -4,10 +4,10 @@ def full_path(file_name)
   File.expand_path File.join(File.dirname($0), file_name)
 end
 
-def make_alert(ip_address, downed)
-  alert = "[#{ip_address}] #{downed.shift}"
+def make_alert(downed)
+  alert = downed.shift
   downed.each { |service| alert += ", #{service}" }
-  alert += " is down!"
+  alert += ' is down!'
 end
 
 ENV['BUNDLE_GEMFILE'] = full_path('Gemfile')
@@ -19,7 +19,16 @@ require full_path('lib/notification.rb')
 
 list = YAML.load_file full_path('config/list.yml')
 setting = YAML.load_file full_path('config/setting.yml')
-notifer = Notification::Chat.new setting['api'], setting['room_id']
+
+unless setting['chat'].nil?
+  set = setting['chat']
+  chat = Notification::Chat.new set['api'], set['room_id']
+end
+
+unless setting['growl'].nil?
+  set = setting['growl']
+  growl = Notification::Growl.new set['appname'], set['host'], set['password'], set['port']
+end
 
 list.each do |server|
   observer = Observation::Server.new(server['ip_address'])
@@ -31,6 +40,8 @@ list.each do |server|
   end
 
   unless downed.empty?
-    notifer.notify make_alert(observer.ip_address, downed)
+    alert = make_alert(downed)
+    chat.notify "[#{observer.ip_address}] #{alert}" unless chat.nil?
+    growl.notify observer.ip_address, alert, full_path('alert.png') unless growl.nil?
   end
 end

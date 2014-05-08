@@ -1,2 +1,8 @@
-api: 0123456789abcdefghijklmnopqrstuv
-room_id: 01234567
+chat:
+  api: 0123456789abcdefghijklmnopqrstuv
+  room_id: 01234567
+growl:
+  appname: server_observer.rb
+  host: 127.0.0.1
+  password: password
+  port: 23053
