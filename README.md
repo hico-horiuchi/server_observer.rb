@@ -26,3 +26,5 @@ configディレクトリの.sampleファイルをコピーして使用する．
 + list.yml
   - `ip_address`: 監視するサーバのIPアドレスまたはFQDN．
   - `servises`: 監視するサーバのポート番号またはサービス名(net-pingが対応しているもののみ)．
+
+アイコン: [IKONS](http://ikons.piotrkwiatkowski.co.uk/)
